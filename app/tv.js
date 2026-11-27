@@ -47,7 +47,7 @@
 
   function refresh(){
     if (DEMO) { apply(demoItems()); return; }
-    fetch(S.UPLOAD_LINK + '?action=list' + (S.CODE ? '&c=' + encodeURIComponent(S.CODE) : '')).then(r => r.json()).then(r => { if (r.ok) apply(r.items.filter(x => !x.video)); }).catch(() => {});
+    fetch(S.UPLOAD_LINK + '?action=list' + (S.CODE ? '&code=' + encodeURIComponent(S.CODE) : '')).then(r => r.json()).then(r => { if (r.ok) apply(r.items.filter(x => !x.video)); }).catch(() => {});
   }
   function apply(list){
     const fresh = list.filter(x => !known.has(x.id));
@@ -80,7 +80,7 @@
   let wishes = [], w = 0;
   function loadWishes(){
     if (DEMO) { wishes = [{name:'Aunty Mai', message:'Happy birthday sayang!'}, {name:'Lisa', message:'Best party ever!'}]; return; }
-    fetch(S.UPLOAD_LINK + '?action=wishes' + (S.CODE ? '&c=' + encodeURIComponent(S.CODE) : '')).then(r => r.json()).then(r => { if (r.ok) wishes = r.items; }).catch(() => {});
+    fetch(S.UPLOAD_LINK + '?action=wishes' + (S.CODE ? '&code=' + encodeURIComponent(S.CODE) : '')).then(r => r.json()).then(r => { if (r.ok) wishes = r.items; }).catch(() => {});
   }
   function showWish(){
     const box = $('wish');

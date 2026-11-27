@@ -17,7 +17,7 @@
   const code = (new URLSearchParams(location.search).get('c') || '').toLowerCase().replace(/[^a-z0-9-]/g, '');
   const fail = t => document.getElementById('boot').textContent = t;
   if (!API || !code) return fail('Missing party code.');
-  fetch(API + '?action=client&c=' + encodeURIComponent(code)).then(r => r.json()).then(r => {
+  fetch(API + '?action=client&code=' + encodeURIComponent(code)).then(r => r.json()).then(r => {
     if (!r.ok) return fail('Party not found.');
     const c = r.client;
     window.SETTINGS = { NAME: c.NAME, TITLE: c.TITLE, THEME: c.THEME, BG_COLOR: c.BG_COLOR, CODE: code, UPLOAD_LINK: API,

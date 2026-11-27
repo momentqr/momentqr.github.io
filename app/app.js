@@ -120,11 +120,11 @@
 
   // ---------- network helpers ----------
   function post(obj){
-    if (S.CODE) obj.c = S.CODE;
+    if (S.CODE) obj.code = S.CODE;
     return fetch(S.UPLOAD_LINK, { method:'POST', body: JSON.stringify(obj) }).then(r => r.json());
   }
   function get(action){
-    return fetch(S.UPLOAD_LINK + '?action=' + action + (S.CODE ? '&c=' + encodeURIComponent(S.CODE) : '')).then(r => r.json());
+    return fetch(S.UPLOAD_LINK + '?action=' + action + (S.CODE ? '&code=' + encodeURIComponent(S.CODE) : '')).then(r => r.json());
   }
 
   // ---------- gallery ----------

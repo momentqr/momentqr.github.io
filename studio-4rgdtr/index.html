@@ -15,7 +15,7 @@ header h1{margin:0;font-size:20px}
 header .hbtns{display:flex;gap:8px;flex-wrap:wrap}
 header a,header button{color:#fff;background:rgba(255,255,255,.15);border:0;border-radius:99px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none}
 .wrap{display:flex;flex-wrap:wrap;gap:24px;padding:24px;max-width:1240px;margin:0 auto;align-items:flex-start}
-.main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.colmain{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:16px}
 .box{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
 .box h2{margin:0 0 12px;font-size:16px;color:#8A2846;display:flex;gap:8px;align-items:center}
 .box h2 span{background:#8A2846;color:#fff;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;flex:0 0 22px}
@@ -91,7 +91,7 @@ aside{flex:1 1 340px;position:sticky;top:16px;display:flex;flex-direction:column
 </header>
 
 <div class="wrap">
-<div class="main">
+<div class="colmain">
 
   <!-- CLIENT LIST -->
   <section class="box" aria-labelledby="clTitle">
@@ -302,7 +302,7 @@ aside{flex:1 1 340px;position:sticky;top:16px;display:flex;flex-direction:column
 
   function openClient(code){
     say('msg', 'Loading...');
-    api({ op: 'getClient', c: code }).then(r => {
+    api({ op: 'getClient', code: code }).then(r => {
       if (!r.ok) return say('msg', r.error, true);
       const c = r.client; resetMedia();
       cur = { code: c.code, isNew: false, saved: true, photoId: c.photoId || '', bgId: c.bgId || '', songId: c.songId || '' };
@@ -388,7 +388,7 @@ aside{flex:1 1 340px;position:sticky;top:16px;display:flex;flex-direction:column
     $('save').disabled = true; say('msg', 'Saving... (songs can take a little while)');
     try {
       const bg = radio('bg');
-      const body = { op: 'saveClient', c: cur.code, folder: val('folder'),
+      const body = { op: 'saveClient', code: cur.code, folder: val('folder'),
         client: { NAME: val('name'), TITLE: val('title'), DATE: val('date'), INVITE_LINE: val('invite'), MESSAGE: val('message'),
           THEME: radio('theme') || 'blush', BG_COLOR: '', BG_LIBRARY: bg && bg !== 'own' ? bg : '', OPEN: $('open').checked } };
       if (media.photo) body.photo = { mime: 'image/jpeg', data: await toB64(media.photo.blob) }; else if (media.photo === null) body.photo = null;
@@ -411,7 +411,7 @@ aside{flex:1 1 340px;position:sticky;top:16px;display:flex;flex-direction:column
   $('del').onclick = () => {
     if (!cur || !cur.saved) { $('f').classList.add('hidden'); $('aside').classList.add('hidden'); cur = null; return; }
     if (!confirm('Delete this party page? Guests’ photos in her folder are NOT deleted.')) return;
-    api({ op: 'deleteClient', c: cur.code }).then(r => { if (r.ok) { cur = null; $('f').classList.add('hidden'); $('aside').classList.add('hidden'); loadClients(); } else say('msg', r.error, true); });
+    api({ op: 'deleteClient', code: cur.code }).then(r => { if (r.ok) { cur = null; $('f').classList.add('hidden'); $('aside').classList.add('hidden'); loadClients(); } else say('msg', r.error, true); });
   };
 
   // ---------------- QR ----------------
