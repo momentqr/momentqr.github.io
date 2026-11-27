@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birthday Gallery - Client Setup</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#F6F1F3;color:#2B2B2B}
+header{background:#8A2846;color:#fff;padding:16px 24px}
+header h1{margin:0;font-size:20px}
+header p{margin:4px 0 0;font-size:13px;opacity:.85}
+.wrap{display:flex;flex-wrap:wrap;gap:24px;padding:24px;max-width:1200px;margin:0 auto;align-items:flex-start}
+form{flex:999 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.box{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.box h2{margin:0 0 12px;font-size:15px;color:#8A2846;display:flex;gap:8px;align-items:center}
+.box h2 span{background:#8A2846;color:#fff;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:12px}
+.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field.full{grid-column:1/-1}
+label{font-size:13px;font-weight:600}
+.help{font-size:12px;color:#6B6B6B}
+input[type=text],input[type=url],input[type=date],textarea,select{font:inherit;font-size:15px;padding:10px 12px;border:1.5px solid #E3D3D9;border-radius:10px;background:#fff;width:100%}
+input:focus,textarea:focus,select:focus{outline:2px solid #E0567A;outline-offset:1px;border-color:#E0567A}
+textarea{min-height:64px;resize:vertical}
+.choices{display:flex;flex-wrap:wrap;gap:10px}
+.choice{position:relative;border:2px solid #E3D3D9;border-radius:12px;padding:6px;background:#fff;cursor:pointer;text-align:center;font-size:12px;font-weight:600;min-width:92px}
+.choice input{position:absolute;opacity:0;pointer-events:none}
+.choice:has(input:checked){border-color:#8A2846;box-shadow:0 0 0 2px #F4C6D2}
+.choice:has(input:focus-visible){outline:2px solid #E0567A}
+.sw{width:76px;height:46px;border-radius:8px;margin:0 auto 5px}
+.bgthumb{width:64px;height:108px;border-radius:8px;object-fit:cover;display:block;margin:0 auto 5px;background:#eee}
+.filebtn{display:inline-flex;align-items:center;gap:8px;border:1.5px dashed #C9718A;border-radius:10px;padding:10px 14px;color:#8A2846;font-weight:600;font-size:14px;cursor:pointer;background:#FFF9FA}
+.filebtn input{display:none}
+.filename{font-size:12px;color:#6B6B6B}
+.photoprev{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid #F4C6D2;display:none}
+.inline{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.linkbox{font-family:ui-monospace,Consolas,monospace;font-size:14px;background:#FBE7EC;color:#5E1A30;padding:10px 12px;border-radius:10px;word-break:break-all}
+.btn{font:inherit;font-weight:700;font-size:15px;border:0;border-radius:999px;padding:13px 22px;cursor:pointer;min-height:46px}
+.btn.main{background:#8A2846;color:#fff}
+.btn.sec{background:#fff;color:#8A2846;box-shadow:inset 0 0 0 2px #8A2846}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.msg{font-size:14px;font-weight:600;min-height:20px}
+.msg.err{color:#B3261E}.msg.ok{color:#1E6B3A}
+aside{flex:1 1 360px;position:sticky;top:16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.phone{width:360px;max-width:100%;height:720px;border:12px solid #2B2B2B;border-radius:40px;overflow:hidden;background:#fff;box-shadow:0 12px 40px rgba(0,0,0,.15)}
+.phone iframe{width:100%;height:100%;border:0;display:block}
+.prevhead{font-size:13px;font-weight:700;color:#8A2846}
+ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
+.warn{font-size:13px;background:#FFF3CD;color:#5C4600;border-radius:10px;padding:8px 12px}
+#lock{position:fixed;inset:0;z-index:50;background:#8A2846;display:flex;align-items:center;justify-content:center;padding:20px}
+#lock .card{background:#fff;border-radius:18px;padding:28px 26px;width:320px;max-width:100%;text-align:center;display:flex;flex-direction:column;gap:12px}
+#lock h2{margin:0;color:#8A2846;font-size:20px}
+#lock input{font:inherit;font-size:22px;letter-spacing:8px;text-align:center;padding:12px;border:1.5px solid #E3D3D9;border-radius:12px}
+.qrprev{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.qrprev svg{width:120px;height:120px;background:#fff;border:1px solid #eee;border-radius:8px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.check{display:flex;gap:8px;align-items:center;font-size:14px}
+.check input{width:18px;height:18px}
+</style>
+</head>
+<body>
+<div id="lock" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+  <form class="card" id="lockForm">
+    <h2 id="lockTitle">Momentqr Studio</h2>
+    <label for="pin" style="font-size:14px;color:#555">Enter PIN</label>
+    <input type="password" id="pin" inputmode="numeric" autocomplete="off" maxlength="12" autofocus>
+    <button class="btn main" type="submit">Unlock</button>
+    <div class="msg err" id="pinMsg" role="status"></div>
+  </form>
+</div>
+<header>
+  <h1>Birthday Gallery · Client Setup</h1>
+  <p>Fill in the form, check the preview, then download the client folder. No code to touch.</p>
+</header>
+
+<div class="wrap">
+<form id="f" autocomplete="off">
+
+  <div class="box">
+    <h2><span>1</span>Birthday details</h2>
+    <div class="row">
+      <div class="field"><label for="name">Name</label><input type="text" id="name" value="" placeholder="e.g. Aisyah" maxlength="30"></div>
+      <div class="field"><label for="title">Title</label><input type="text" id="title" value="Sweet Birthday" maxlength="40"><span class="help">e.g. Sweet 16, 7th Birthday</span></div>
+      <div class="field"><label for="date">Date</label><input type="text" id="date" value="12 December 2026" maxlength="40"></div>
+      <div class="field"><label for="invite">Small line on top</label><input type="text" id="invite" value="You're invited to" maxlength="40"></div>
+      <div class="field full"><label for="message">Thank-you message</label><textarea id="message" maxlength="200">Thank you for celebrating with me! Share your photos and leave me a wish.</textarea></div>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2><span>2</span>Theme colour</h2>
+    <div class="choices" id="themes">
+      <label class="choice"><input type="radio" name="theme" value="blush" checked><div class="sw" style="background:linear-gradient(135deg,#FBE7EC 50%,#8A2846 50%)"></div>Blush pink</label>
+      <label class="choice"><input type="radio" name="theme" value="lilac"><div class="sw" style="background:linear-gradient(135deg,#EFE7F8 50%,#4B2A6B 50%)"></div>Lilac &amp; gold</label>
+      <label class="choice"><input type="radio" name="theme" value="pastel"><div class="sw" style="background:linear-gradient(135deg,#FFF4EC 50%,#C2185B 50%)"></div>Cute pastel</label>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2><span>3</span>Her photo</h2>
+    <div class="inline">
+      <img class="photoprev" id="photoPrev" alt="Her photo preview">
+      <label class="filebtn">Choose photo<input type="file" id="photo" accept="image/*"></label>
+      <span class="filename" id="photoName">No photo yet (a sample picture is used)</span>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2><span>4</span>Background</h2>
+    <div class="choices" id="bgs">
+      <label class="choice"><input type="radio" name="bg" value="../library/backgrounds/pink-confetti.jpg" checked><img class="bgthumb" src="../library/backgrounds/pink-confetti.jpg" alt="">Confetti</label>
+      <label class="choice"><input type="radio" name="bg" value="../library/backgrounds/pink-balloons.jpg"><img class="bgthumb" src="../library/backgrounds/pink-balloons.jpg" alt="">Balloons</label>
+      <label class="choice"><input type="radio" name="bg" value="../library/backgrounds/lilac-sparkle.jpg"><img class="bgthumb" src="../library/backgrounds/lilac-sparkle.jpg" alt="">Sparkle</label>
+      <label class="choice"><input type="radio" name="bg" value="../library/backgrounds/pastel-dots.jpg"><img class="bgthumb" src="../library/backgrounds/pastel-dots.jpg" alt="">Dots</label>
+      <label class="choice"><input type="radio" name="bg" value="own"><img class="bgthumb" id="ownBgThumb" alt=""><span id="ownBgLabel">Own picture</span></label>
+      <label class="choice"><input type="radio" name="bg" value=""><div class="bgthumb" style="background:#fff;border:1px solid #eee"></div>None</label>
+    </div>
+    <div class="inline" style="margin-top:10px">
+      <label class="filebtn">Upload own background<input type="file" id="ownBg" accept="image/*"></label>
+      <span class="help">Tall picture looks best.</span>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2><span>5</span>Music</h2>
+    <div class="inline">
+      <label class="filebtn">Choose MP3 song<input type="file" id="song" accept="audio/mpeg,audio/mp3,audio/*"></label>
+      <span class="filename" id="songName">No music</span>
+      <button type="button" class="btn sec" id="clearSong" style="padding:8px 14px;min-height:0;font-size:13px">Remove</button>
+    </div>
+    <p class="help" style="margin:8px 0 0">Best under 5 MB. Plays after the guest taps "Tap to open".</p>
+  </div>
+
+  <div class="box">
+    <h2><span>6</span>Links</h2>
+    <div class="row">
+      <div class="field full"><label for="upload">Upload link (from script.google.com, ends with /exec)</label><input type="url" id="upload" placeholder="https://script.google.com/macros/s/.../exec"><span class="help">Leave empty to make a demo page.</span></div>
+      <div class="field"><label for="slug">Page name in the link</label><div class="inline"><input type="text" id="slug" value="" maxlength="40" style="flex:1;min-width:120px"><button type="button" class="btn sec" id="newCode" style="padding:8px 14px;min-height:0;font-size:13px">New code</button></div><span class="help">A random code, so no names show in the link. Keep the same code to update a client.</span></div>
+      <div class="field"><label for="site">Your site address</label><input type="text" id="site" value="momentqr.github.io" placeholder="momentqr.github.io"></div>
+      <div class="field full"><label>Guests' link (put this in the QR)</label><div class="linkbox" id="finalLink"></div>
+        <div class="qrprev"><div id="qrBox" aria-label="QR code of the guests' link" role="img"></div>
+          <div><button type="button" class="btn sec" id="qrPng" style="padding:8px 14px;min-height:0;font-size:13px">Download QR picture (PNG)</button>
+          <p class="help" style="margin:6px 0 0">Scan it with your phone to test.</p></div></div></div>
+      <div class="field full"><label>TV / projector slideshow link</label><div class="linkbox" id="tvLink"></div><span class="help">Open this on the laptop connected to the TV, then click "Full screen". Photos appear live as guests upload.</span></div>
+    </div>
+  </div>
+
+  <div class="box">
+    <h2><span>7</span>Download</h2>
+    <div class="inline">
+      <button type="button" class="btn main" id="download">Download client folder (.zip)</button>
+      <button type="button" class="btn sec" id="copyLink">Copy guests' link</button>
+    </div>
+    <div class="msg" id="msg" role="status"></div>
+    <ol class="next">
+      <li>Unzip it into your <b>my-site</b> folder (you get a new folder, e.g. <b>sarah</b>).</li>
+      <li>Upload the <b>whole my-site folder</b> to Cloudflare Pages (Create new deployment).</li>
+      <li>Send the guests' link for the QR card.</li>
+    </ol>
+  </div>
+  <div class="box">
+    <h2><span>8</span>Table cards (print)</h2>
+    <div class="cards">
+      <div class="field"><label for="tStart">First table no.</label><input type="text" id="tStart" value="1" inputmode="numeric"></div>
+      <div class="field"><label for="tCount">How many tables</label><input type="text" id="tCount" value="10" inputmode="numeric"></div>
+      <div class="field"><label for="tWord">Word before number</label><input type="text" id="tWord" value="Table" maxlength="12"></div>
+      <div class="field" style="grid-column:1/-1"><label for="cardLine">Line under the QR</label><input type="text" id="cardLine" value="Scan & share your photos" maxlength="50"></div>
+      <div class="field"><label for="wifiName">Wi-Fi name (optional)</label><input type="text" id="wifiName" maxlength="40"></div>
+      <div class="field"><label for="wifiPass">Wi-Fi password (optional)</label><input type="text" id="wifiPass" maxlength="40"></div>
+      <div class="field" style="justify-content:flex-end"><label class="check"><input type="checkbox" id="noNum"> No table number</label>
+        <label class="check"><input type="checkbox" id="cardPhoto" checked> Show her photo</label></div>
+    </div>
+    <div class="inline" style="margin-top:12px">
+      <button type="button" class="btn main" id="makeCards">Make table cards (PDF)</button>
+    </div>
+    <p class="help" style="margin:8px 0 0">Opens the print window: choose <b>Save as PDF</b> (or print directly). 4 cards per A4 page (A6 size, cut along the lines). Uses the same theme, name and date as above.</p>
+    <div class="msg" id="cardMsg" role="status"></div>
+  </div>
+</form>
+
+<aside>
+  <div class="prevhead">Live preview (phone)</div>
+  <div class="phone"><iframe id="preview" title="Phone preview of the birthday page"></iframe></div>
+  <div class="warn" id="demoNote">Preview runs in demo mode: no real uploads here.</div>
+</aside>
+</div>
+
+<script src="../app/qrcode.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const files = { photo:null, photoUrl:'', ownBg:null, ownBgUrl:'', song:null, songUrl:'' };
+  const ROOT = new URL('../', location.href).href;
+  const FONTS = 'https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap';
+
+  const slugify = s => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
+  function randomCode(){
+    const a = 'abcdefghjkmnpqrstuvwxyz23456789'; let c = '';
+    const r = new Uint32Array(6); crypto.getRandomValues(r);
+    r.forEach(n => c += a[n % a.length]); return c;
+  }
+  $('slug').value = randomCode();
+  $('slug').addEventListener('input', () => { $('slug').value = slugify($('slug').value) || ''; update(); });
+  $('newCode').onclick = () => { $('slug').value = randomCode(); update(); };
+
+  function val(id){ return $(id).value.trim(); }
+  function radio(name){ const r = document.querySelector('input[name="'+name+'"]:checked'); return r ? r.value : ''; }
+
+  // ---------- files ----------
+  function shrink(file, maxW, maxH, quality){
+    return new Promise((res, rej) => {
+      const url = URL.createObjectURL(file), img = new Image();
+      img.onload = () => {
+        const s = Math.min(1, maxW / img.width, maxH / img.height);
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(b => b ? res(b) : rej('Could not read picture'), 'image/jpeg', quality);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); rej('Could not read picture'); };
+      img.src = url;
+    });
+  }
+  $('photo').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      files.photo = await shrink(f, 800, 800, .85);
+      if (files.photoUrl) URL.revokeObjectURL(files.photoUrl);
+      files.photoUrl = URL.createObjectURL(files.photo);
+      $('photoPrev').src = files.photoUrl; $('photoPrev').style.display = 'block';
+      $('photoName').textContent = f.name;
+      update();
+    } catch(err){ msg(String(err), true); }
+  };
+  $('ownBg').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      files.ownBg = await shrink(f, 1080, 1920, .82);
+      if (files.ownBgUrl) URL.revokeObjectURL(files.ownBgUrl);
+      files.ownBgUrl = URL.createObjectURL(files.ownBg);
+      $('ownBgThumb').src = files.ownBgUrl; $('ownBgLabel').textContent = 'Own picture';
+      document.querySelector('input[name="bg"][value="own"]').checked = true;
+      update();
+    } catch(err){ msg(String(err), true); }
+  };
+  $('song').onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    if (f.size > 20 * 1024 * 1024) { msg('Song is too big. Please use one under 20 MB (best under 5 MB).', true); return; }
+    files.song = f;
+    if (files.songUrl) URL.revokeObjectURL(files.songUrl);
+    files.songUrl = URL.createObjectURL(f);
+    $('songName').textContent = f.name + ' (' + (f.size/1048576).toFixed(1) + ' MB)';
+    update();
+  };
+  $('clearSong').onclick = () => { files.song = null; files.songUrl = ''; $('song').value=''; $('songName').textContent = 'No music'; update(); };
+
+  // ---------- settings ----------
+  function settings(forPreview){
+    const bgChoice = radio('bg');
+    let bg = bgChoice;
+    if (bgChoice === 'own') bg = files.ownBg ? (forPreview ? files.ownBgUrl : 'bg.jpg') : '';
+    else if (forPreview && bg) bg = ROOT + bg.replace('../','');
+    let photo = files.photo ? (forPreview ? files.photoUrl : 'photo.jpg') : (forPreview ? ROOT + 'library/sample-photo.jpg' : 'photo.jpg');
+    return {
+      NAME: val('name') || 'Birthday Girl',
+      TITLE: val('title'),
+      DATE: val('date'),
+      INVITE_LINE: val('invite'),
+      MESSAGE: val('message'),
+      THEME: radio('theme') || 'blush',
+      BG_COLOR: '',
+      BG_IMAGE: bg,
+      SONG: files.song ? (forPreview ? files.songUrl : 'song.mp3') : '',
+      PHOTO: photo,
+      UPLOAD_LINK: forPreview ? '' : val('upload')
+    };
+  }
+  function settingsBlock(s){
+    const lines = Object.keys(s).map(k => '  ' + k.padEnd(12) + ': ' + JSON.stringify(s[k]).replace(/</g,'\\u003c'));
+    return 'const SETTINGS = {\n' + lines.join(',\n') + '\n};';
+  }
+  function pageHtml(s, base){
+    return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
+      + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+      + (base ? '<base href="' + base + '">\n' : '')
+      + '<title>Birthday Gallery</title>\n<script>\n/* SETTINGS made with the Setup page. To change, use the Setup page again. */\n'
+      + settingsBlock(s) + '\n<\/script>\n'
+      + '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+      + '<link href="' + FONTS + '" rel="stylesheet">\n'
+      + '<link rel="stylesheet" href="../app/style.css">\n</head>\n<body>\n<script src="../app/app.js"><\/script>\n</body>\n</html>\n';
+  }
+
+  function tvHtml(s){
+    return '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
+      + '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+      + '<title>Live Slideshow</title>\n<script>\n/* SETTINGS made with the Setup page. */\n'
+      + settingsBlock(s) + '\n<\/script>\n'
+      + '<link href="' + FONTS + '" rel="stylesheet">\n'
+      + '<link rel="stylesheet" href="../app/style.css">\n</head>\n<body>\n'
+      + '<script src="../app/qrcode.js"><\/script>\n<script src="../app/tv.js"><\/script>\n</body>\n</html>\n';
+  }
+
+  // ---------- preview ----------
+  let t;
+  function update(){
+    clearTimeout(t);
+    t = setTimeout(() => {
+      $('preview').srcdoc = pageHtml(settings(true), ROOT + 'library/');
+      const site = val('site').replace(/^https?:\/\//,'').replace(/\/+$/,'') || 'momentqr.github.io';
+      $('finalLink').textContent = 'https://' + site + '/' + (val('slug') || 'client') + '/';
+      $('tvLink').textContent = $('finalLink').textContent + 'tv.html';
+      drawQr();
+    }, 250);
+  }
+  $('f').addEventListener('input', update);
+  $('f').addEventListener('change', update);
+
+  // ---------- zip (no compression) ----------
+  const CRC = (() => { const t = new Uint32Array(256); for (let n=0;n<256;n++){ let c=n; for (let k=0;k<8;k++) c = c&1 ? 0xEDB88320^(c>>>1) : c>>>1; t[n]=c>>>0; } return t; })();
+  function crc32(u8){ let c = 0xFFFFFFFF; for (let i=0;i<u8.length;i++) c = CRC[(c^u8[i])&255]^(c>>>8); return (c^0xFFFFFFFF)>>>0; }
+  function makeZip(entries){
+    const enc = new TextEncoder(), parts = [], central = []; let offset = 0;
+    entries.forEach(e => {
+      const name = enc.encode(e.name), data = e.data, crc = crc32(data);
+      const h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0,0x04034b50,true); h.setUint16(4,20,true); h.setUint16(6,0x0800,true); h.setUint16(8,0,true);
+      h.setUint16(10,0,true); h.setUint16(12,0x21,true); h.setUint32(14,crc,true);
+      h.setUint32(18,data.length,true); h.setUint32(22,data.length,true); h.setUint16(26,name.length,true); h.setUint16(28,0,true);
+      parts.push(new Uint8Array(h.buffer), name, data);
+      const c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true); c.setUint16(8,0x0800,true); c.setUint16(10,0,true);
+      c.setUint16(12,0,true); c.setUint16(14,0x21,true); c.setUint32(16,crc,true); c.setUint32(20,data.length,true); c.setUint32(24,data.length,true);
+      c.setUint16(28,name.length,true); c.setUint16(30,0,true); c.setUint16(32,0,true); c.setUint16(34,0,true); c.setUint16(36,0,true);
+      c.setUint32(38,0,true); c.setUint32(42,offset,true);
+      central.push(new Uint8Array(c.buffer), name);
+      offset += 30 + name.length + data.length;
+    });
+    const cSize = central.reduce((a,b)=>a+b.length,0);
+    const end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0,0x06054b50,true); end.setUint16(8,entries.length,true); end.setUint16(10,entries.length,true);
+    end.setUint32(12,cSize,true); end.setUint32(16,offset,true);
+    return new Blob([...parts, ...central, new Uint8Array(end.buffer)], { type:'application/zip' });
+  }
+  const bytes = b => b.arrayBuffer().then(a => new Uint8Array(a));
+
+  function msg(text, err){ $('msg').textContent = text; $('msg').className = 'msg ' + (err ? 'err' : 'ok'); }
+
+  $('download').onclick = async () => {
+    const slug = val('slug');
+    if (!slug) return msg('Please fill in "Page name in the link".', true);
+    if (['app','library','setup','sarah','aina','demo','studio-4rgdtr'].includes(slug) || slug.indexOf('studio-') === 0) return msg('That page name is used by the system. Choose another.', true);
+    const up = val('upload');
+    if (up && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(up)) return msg('Upload link looks wrong. It should start with https://script.google.com/macros/s/ and end with /exec', true);
+    $('download').disabled = true; msg('Making the folder...');
+    try {
+      const enc = new TextEncoder();
+      const entries = [{ name: slug + '/index.html', data: enc.encode(pageHtml(settings(false))) }, { name: slug + '/tv.html', data: enc.encode(tvHtml(settings(false))) }];
+      if (files.photo) entries.push({ name: slug + '/photo.jpg', data: await bytes(files.photo) });
+      else entries.push({ name: slug + '/photo.jpg', data: await fetch(ROOT + 'library/sample-photo.jpg').then(r => r.arrayBuffer()).then(a => new Uint8Array(a)).catch(() => new Uint8Array()) });
+      if (radio('bg') === 'own' && files.ownBg) entries.push({ name: slug + '/bg.jpg', data: await bytes(files.ownBg) });
+      if (files.song) entries.push({ name: slug + '/song.mp3', data: await bytes(files.song) });
+      const zip = makeZip(entries.filter(e => e.data.length));
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(zip); a.download = slug + '.zip';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+      msg('Downloaded ' + slug + '.zip' + (up ? '' : ' (demo mode: no upload link yet)') + '. Now unzip it into my-site.');
+    } catch(err){ msg('Something went wrong: ' + err, true); }
+    $('download').disabled = false;
+  };
+  $('copyLink').onclick = () => {
+    const link = $('finalLink').textContent;
+    (navigator.clipboard ? navigator.clipboard.writeText(link) : Promise.reject())
+      .then(() => msg('Link copied: ' + link))
+      .catch(() => msg('Select the link above and copy it.', true));
+  };
+
+  // ---------- PIN lock (keeps casual visitors out; not real security) ----------
+  const PIN_HASH = '57ea1669ee6560527b06a66dcfaef98ba5c77def7e55a0991b3d13cae9dab351';
+  async function sha(t){ const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('momentqr:' + t)); return Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2,'0')).join(''); }
+  function unlock(){ $('lock').style.display = 'none'; try { sessionStorage.setItem('mq_ok','1'); } catch(e){} }
+  try { if (sessionStorage.getItem('mq_ok') === '1') unlock(); } catch(e){}
+  $('lockForm').onsubmit = async e => {
+    e.preventDefault();
+    try {
+      if (await sha($('pin').value.trim()) === PIN_HASH) unlock();
+      else { $('pinMsg').textContent = 'Wrong PIN'; $('pin').value = ''; }
+    } catch(err){ $('pinMsg').textContent = 'This browser cannot check the PIN.'; }
+  };
+
+  // ---------- QR ----------
+  function qrSvg(text, color){
+    const m = window.makeQR(text), n = m.length, q = 2; let d = '';
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (m[r][c]) d += 'M' + (c+q) + ' ' + (r+q) + 'h1v1h-1z';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + (n+2*q) + ' ' + (n+2*q) + '" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="' + d + '" fill="' + (color || '#000') + '"/></svg>';
+  }
+  function guestLink(){ return $('finalLink').textContent; }
+  function drawQr(){ try { $('qrBox').innerHTML = qrSvg(guestLink()); } catch(e){} }
+  $('qrPng').onclick = () => {
+    const m = window.makeQR(guestLink()), n = m.length, q = 4, s = 20, c = document.createElement('canvas');
+    c.width = c.height = (n + 2*q) * s; const g = c.getContext('2d');
+    g.fillStyle = '#fff'; g.fillRect(0,0,c.width,c.height); g.fillStyle = '#000';
+    for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) if (m[r][k]) g.fillRect((k+q)*s, (r+q)*s, s, s);
+    c.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'qr-' + (val('slug') || 'client') + '.png'; document.body.appendChild(a); a.click(); a.remove(); });
+  };
+
+  // ---------- table cards ----------
+  const esc = t => String(t).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const THEMES = {
+    blush:  { bg:'#FBE7EC', ink:'#5E1A30', main:'#8A2846', accent:'#C9718A', script:"'Great Vibes',cursive", head:"'Playfair Display',Georgia,serif" },
+    lilac:  { bg:'#EFE7F8', ink:'#2F1846', main:'#4B2A6B', accent:'#B08D3C', script:"'Pinyon Script',cursive", head:"'Cormorant Garamond',Georgia,serif" },
+    pastel: { bg:'#FFF4EC', ink:'#6B2140', main:'#C2185B', accent:'#FF8FB1', script:"'Fredoka',sans-serif", head:"'Fredoka',sans-serif" }
+  };
+  function photoData(){
+    return new Promise(res => {
+      if (!$('cardPhoto').checked) return res('');
+      const src = files.photo ? files.photoUrl : ROOT + 'library/sample-photo.jpg';
+      const img = new Image(); img.crossOrigin = 'anonymous';
+      img.onload = () => { const c = document.createElement('canvas'); c.width = c.height = 300; const g = c.getContext('2d');
+        const s = Math.max(300/img.width, 300/img.height); g.drawImage(img, (300 - img.width*s)/2, (300 - img.height*s)/2, img.width*s, img.height*s);
+        try { res(c.toDataURL('image/jpeg', .85)); } catch(e){ res(''); } };
+      img.onerror = () => res(''); img.src = src;
+    });
+  }
+  $('makeCards').onclick = async () => {
+    const start = parseInt(val('tStart'), 10) || 1, count = Math.min(200, Math.max(1, parseInt(val('tCount'), 10) || 1));
+    const noNum = $('noNum').checked, t = THEMES[radio('theme')] || THEMES.blush, s = settings(false);
+    const qr = qrSvg(guestLink(), t.ink), photo = await photoData();
+    const wifi = val('wifiName') ? '<div class="wifi">Wi-Fi: <b>' + esc(val('wifiName')) + '</b>' + (val('wifiPass') ? ' &nbsp;·&nbsp; Password: <b>' + esc(val('wifiPass')) + '</b>' : '') + '</div>' : '';
+    const n = noNum ? 4 : count, cards = [];
+    for (let i = 0; i < n; i++) {
+      cards.push('<div class="c"><div class="in">'
+        + '<div class="k">Happy Birthday</div>'
+        + (photo ? '<img class="p" src="' + photo + '" alt="">' : '')
+        + '<div class="nm">' + esc(s.NAME) + '</div>'
+        + '<div class="dt">' + esc([s.TITLE, s.DATE].filter(Boolean).join(' · ')) + '</div>'
+        + '<div class="qr">' + qr + '</div>'
+        + '<div class="ln">' + esc(val('cardLine')) + '</div>'
+        + wifi
+        + (noNum ? '' : '<div class="tb">' + esc(val('tWord')) + ' ' + (start + i) + '</div>')
+        + '</div></div>');
+    }
+    const pages = [];
+    for (let i = 0; i < cards.length; i += 4) pages.push('<div class="pg">' + cards.slice(i, i+4).join('') + '</div>');
+    const doc = '<!doctype html><html><head><meta charset="utf-8"><title>Table cards</title>'
+      + '<link href="' + FONTS + '" rel="stylesheet"><style>'
+      + '@page{size:A4;margin:0}*{box-sizing:border-box}body{margin:0;font-family:Nunito,system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}'
+      + '.pg{width:210mm;height:297mm;display:grid;grid-template-columns:105mm 105mm;grid-template-rows:148.5mm 148.5mm;page-break-after:always;break-after:page}'
+      + '.c{border:0.2mm dashed #bbb;padding:6mm;background:#fff}'
+      + '.in{height:100%;border-radius:5mm;background:' + t.bg + ';border:0.6mm solid ' + t.accent + ';display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2mm;text-align:center;color:' + t.ink + ';padding:4mm}'
+      + '.k{font-size:8pt;letter-spacing:2.5pt;text-transform:uppercase;font-weight:700;color:' + t.main + '}'
+      + '.p{width:20mm;height:20mm;border-radius:50%;object-fit:cover;border:0.8mm solid #fff;box-shadow:0 0 0 0.4mm ' + t.accent + '}'
+      + '.nm{font-family:' + t.script + ';font-size:30pt;line-height:1;color:' + t.main + '}'
+      + '.dt{font-family:' + t.head + ';font-style:italic;font-size:10pt}'
+      + '.qr{width:42mm;height:42mm;background:#fff;border-radius:3mm;padding:1.5mm}.qr svg{width:100%;height:100%;display:block}'
+      + '.ln{font-family:' + t.head + ';font-size:11pt;font-weight:600;color:' + t.main + '}'
+      + '.wifi{font-size:7.5pt}'
+      + '.tb{margin-top:1mm;font-weight:700;font-size:12pt;color:#fff;background:' + t.main + ';border-radius:99px;padding:1.2mm 6mm}'
+      + '</style></head><body>' + pages.join('') + '</body></html>';
+    let fr = $('printFrame');
+    if (!fr) { fr = document.createElement('iframe'); fr.id = 'printFrame'; fr.title = 'Table cards'; fr.style.cssText = 'position:fixed;right:0;bottom:0;width:1px;height:1px;border:0;opacity:0'; document.body.appendChild(fr); }
+    fr.onload = () => {
+      const w = fr.contentWindow;
+      const go = () => setTimeout(() => { w.focus(); w.print(); }, 300);
+      (w.document.fonts && w.document.fonts.ready) ? w.document.fonts.ready.then(go) : go();
+    };
+    fr.srcdoc = doc;
+    $('cardMsg').textContent = 'Print window opening: choose "Save as PDF" as the printer.'; $('cardMsg').className = 'msg ok';
+  };
+
+  update();
+})();
+</script>
+</body>
+</html>

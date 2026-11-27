@@ -1,5 +1,190 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Birthday Gallery</title>
-<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#FBE7EC;font-family:system-ui,sans-serif;color:#8A2846;text-align:center}h1{font-size:28px;margin:0 0 6px}p{margin:0;opacity:.8}</style>
-</head><body><div><h1>Birthday Gallery</h1><p>Scan the QR code on your table to open the party page.</p></div></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Momentqr · QR Photo Gallery for Birthdays &amp; Parties</title>
+<meta name="description" content="Guests scan a QR, upload photos with no app and no login, and everything lands in one gallery. Music page, live TV slideshow and table cards included.">
+
+<script>
+/* ===== BUSINESS SETTINGS (Claude can change these for you) ===== */
+const BIZ = {
+  WHATSAPP: "",                 // e.g. "60123456789"  (country code, no + or spaces). Empty = button hidden
+  WA_TEXT:  "Hi Momentqr! I'm interested in the QR photo gallery for my party.",
+  BASIC_PRICE:   "RM [PRICE]",
+  PREMIUM_PRICE: "RM [PRICE]"
+};
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF7F9;--soft:#FBE7EC;--main:#8A2846;--ink:#3A1422;--accent:#E0567A;--muted:#6E4B57}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
+a{color:var(--main)}a:hover{color:#5E1A30}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:16px 0;flex-wrap:wrap;gap:10px}
+.logo{font-family:"Great Vibes",cursive;font-size:34px;color:var(--main);text-decoration:none;line-height:1}
+.nav-links{display:flex;gap:18px;flex-wrap:wrap;font-weight:700;font-size:15px}
+.nav-links a{text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:12px 24px;border-radius:999px;font-weight:800;font-size:16px;text-decoration:none;border:0;cursor:pointer}
+.btn.main{background:var(--main);color:#fff}.btn.main:hover{background:#6F1F38;color:#fff}
+.btn.ghost{background:#fff;color:var(--main);box-shadow:inset 0 0 0 2px var(--main)}
+.btn.wa{background:#1F8A4C;color:#fff}.btn.wa:hover{background:#176B3B;color:#fff}
+.hero{display:flex;flex-wrap:wrap;gap:40px;align-items:center;padding:30px 0 60px}
+.hero-text{flex:1 1 420px;min-width:0}
+.kick{display:inline-block;background:var(--soft);color:var(--main);font-weight:800;font-size:13px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:99px}
+h1{font-family:"Playfair Display",Georgia,serif;font-size:clamp(34px,5vw,54px);line-height:1.12;margin:14px 0 14px;color:var(--ink)}
+h1 em{font-style:normal;color:var(--main)}
+.lead{font-size:18px;color:var(--muted);margin:0 0 24px;max-width:520px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-phone{flex:0 1 330px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:10px}
+.phone{width:300px;max-width:100%;height:600px;border:11px solid #2B2B2B;border-radius:42px;overflow:hidden;background:#fff;box-shadow:0 24px 60px rgba(138,40,70,.25)}
+.phone iframe{width:100%;height:100%;border:0;display:block}
+.small{font-size:13px;color:var(--muted)}
+section{padding:56px 0}
+section.alt{background:#fff}
+h2{font-family:"Playfair Display",Georgia,serif;font-size:clamp(28px,3.6vw,38px);margin:0 0 8px;text-align:center}
+.sub{text-align:center;color:var(--muted);margin:0 auto 34px;max-width:560px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.step{background:var(--bg);border-radius:20px;padding:24px;text-align:center}
+.num{width:46px;height:46px;border-radius:50%;background:var(--main);color:#fff;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.step h3,.feat h3,.pkg h3{margin:0 0 6px;font-size:19px}
+.step p,.feat p{margin:0;color:var(--muted);font-size:15px}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.feat{background:#fff;border:1px solid #F3DCE3;border-radius:18px;padding:20px;display:flex;gap:14px;align-items:flex-start}
+.ico{flex:0 0 42px;height:42px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;color:var(--main)}
+.pkgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:780px;margin:0 auto}
+.pkg{background:var(--bg);border-radius:22px;padding:26px;border:2px solid #F3DCE3;display:flex;flex-direction:column;gap:12px}
+.pkg.best{border-color:var(--main);background:#fff;box-shadow:0 12px 34px rgba(138,40,70,.12)}
+.tag{align-self:flex-start;background:var(--main);color:#fff;font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px}
+.price{font-family:"Playfair Display",Georgia,serif;font-size:34px;font-weight:700;color:var(--main)}
+.pkg ul{margin:0;padding-left:20px;color:var(--ink)}
+.pkg li{margin:4px 0}
+.faq{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+details{background:#fff;border:1px solid #F3DCE3;border-radius:14px;padding:14px 18px}
+summary{font-weight:800;cursor:pointer}
+details p{margin:8px 0 0;color:var(--muted)}
+.final{text-align:center;background:var(--main);color:#fff;border-radius:28px;padding:44px 24px;margin:20px 0 40px}
+.final h2{color:#fff}
+.final p{color:#F9D8E2;margin:0 0 22px}
+.final .btn.ghost{box-shadow:none}
+footer{text-align:center;padding:20px 0 40px;font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <a class="logo" href="#">Momentqr</a>
+    <div class="nav-links"><a href="#how">How it works</a><a href="#features">Features</a><a href="#packages">Packages</a><a href="#faq">FAQ</a></div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-text">
+      <span class="kick">QR photo gallery for parties</span>
+      <h1>Every guest's photos, <em>in one place</em>.</h1>
+      <p class="lead">Guests scan the QR on their table and share photos straight from their phone. No app, no login. You keep every moment, and see them live on the big screen.</p>
+      <div class="cta">
+        <a class="btn main" href="demo/index.html" target="_blank" rel="noopener">Try the demo</a>
+        <a class="btn ghost" href="demo/tv.html" target="_blank" rel="noopener">See the TV slideshow</a>
+      </div>
+    </div>
+    <div class="hero-phone">
+      <div class="phone"><iframe src="demo/index.html" title="Demo of a birthday photo page" loading="lazy"></iframe></div>
+      <span class="small">Live demo: tap it and try</span>
+    </div>
+  </div>
+</div>
+
+<section class="alt" id="how">
+  <div class="wrap">
+    <h2>How it works</h2>
+    <p class="sub">Three simple steps for your guests. We set up everything else.</p>
+    <div class="steps">
+      <div class="step"><div class="num">1</div><h3>Scan</h3><p>Guests scan the QR card on their table with the phone camera.</p></div>
+      <div class="step"><div class="num">2</div><h3>Open</h3><p>A birthday page opens with her name, photo and your song.</p></div>
+      <div class="step"><div class="num">3</div><h3>Share</h3><p>They upload photos and wishes. Everything lands in one gallery and your Google Drive.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2>What you get</h2>
+    <p class="sub">Made for birthdays, sweet 16s, kids' parties and family events.</p>
+    <div class="feats">
+      <div class="feat"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg></div><div><h3>No app, no login</h3><p>Works on any Android or iPhone, straight from the camera.</p></div></div>
+      <div class="feat"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></div><div><h3>Personal music page</h3><p>Her name, photo, theme colours and your chosen song.</p></div></div>
+      <div class="feat"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div><div><h3>Live TV slideshow</h3><p>New photos pop up on the big screen during the party.</p></div></div>
+      <div class="feat"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></div><div><h3>Saved to your Drive</h3><p>Full photos go into your own Google Drive folder to keep.</p></div></div>
+      <div class="feat"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><h3>Birthday wishes</h3><p>Guests leave messages, saved in a sheet for you.</p></div></div>
+      <div class="feat"><div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 17h4v4"/></svg></div><div><h3>Table cards</h3><p>Printable QR cards with table numbers, in your theme.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="packages">
+  <div class="wrap">
+    <h2>Packages</h2>
+    <p class="sub">Simple pricing. Ask us for custom themes or bigger events.</p>
+    <div class="pkgs">
+      <div class="pkg">
+        <h3>Basic</h3>
+        <div class="price" id="pBasic"></div>
+        <ul><li>Personal birthday page + music</li><li>Photo &amp; video upload, no login</li><li>Gallery + birthday wishes</li><li>Photos in your Google Drive</li><li>QR table cards (PDF to print)</li></ul>
+      </div>
+      <div class="pkg best">
+        <span class="tag">Most popular</span>
+        <h3>Premium</h3>
+        <div class="price" id="pPremium"></div>
+        <ul><li>Everything in Basic</li><li>Live TV / projector slideshow</li><li>Custom background with her photo</li><li>Printed table cards</li><li>Help on the party day</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>Questions</h2>
+    <p class="sub">Quick answers before you book.</p>
+    <div class="faq">
+      <details><summary>Do guests need to download an app?</summary><p>No. They scan the QR with the phone camera and the page opens in the browser.</p></details>
+      <details><summary>Do guests need to log in?</summary><p>No login needed. They just pick photos and tap upload.</p></details>
+      <details><summary>Where do the photos go?</summary><p>Into a Google Drive folder that belongs to you, in full quality. You can download everything after the party.</p></details>
+      <details><summary>Can guests upload videos?</summary><p>Yes, short clips (about 15 to 30 seconds).</p></details>
+      <details><summary>How long before the party should I book?</summary><p>At least 3 days before, so we can set up your page and print the cards.</p></details>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="final">
+    <h2>Make your party memories easy</h2>
+    <p>Tell us the date and theme, and we'll set it all up.</p>
+    <div class="cta" style="justify-content:center">
+      <a class="btn wa" id="waBtn" href="#" target="_blank" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.5L3 21l2-5.5A8.4 8.4 0 1 1 21 11.5z"/></svg>
+        WhatsApp us
+      </a>
+      <a class="btn ghost" href="demo/index.html" target="_blank" rel="noopener">Try the demo</a>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; <span id="yr"></span> Momentqr · QR photo gallery for parties</footer>
+
+<script>
+(function(){
+  document.getElementById('pBasic').textContent = BIZ.BASIC_PRICE;
+  document.getElementById('pPremium').textContent = BIZ.PREMIUM_PRICE;
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  const wa = document.getElementById('waBtn');
+  if (/^\d{8,15}$/.test(BIZ.WHATSAPP)) wa.href = 'https://wa.me/' + BIZ.WHATSAPP + '?text=' + encodeURIComponent(BIZ.WA_TEXT);
+  else wa.style.display = 'none';
+})();
+</script>
+</body>
+</html>

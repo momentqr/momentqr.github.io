@@ -4,7 +4,8 @@ BIRTHDAY GALLERY - ONE SITE FOR ALL CLIENTS (NO CODING)
 Guests link:  momentqr.github.io/<code>/     e.g. momentqr.github.io/k7x2m/
 
 NEW CLIENT (no code)
-  1. Open the Setup page: double-click  my-site/setup/index.html
+  1. Open the Setup page: double-click  my-site/studio-4rgdtr/index.html  (PIN: 2468)
+     or online: momentqr.github.io/studio-4rgdtr/
      (opens in Chrome)
   2. Fill in the form: name, title, date, theme, her photo,
      background, song, upload link (/exec), page name.
@@ -15,14 +16,18 @@ NEW CLIENT (no code)
      You now have a new folder, e.g. my-site/mira
   5. Upload the WHOLE my-site folder to Cloudflare Pages
      (your project > Create new deployment)
-  6. Send the guests' link (shown on the Setup page) for the QR card
+  6. TV slideshow for the party screen: open  <guests link>tv.html  (shown on
+     the Setup page) on the laptop connected to the TV > click Full screen.
+  7. Step 8 on the Setup page: "Make table cards (PDF)" > Save as PDF > print
 
 CHANGE A CLIENT
   Open the Setup page, fill it again with the same page name,
   download, unzip into my-site (replace the old folder), upload again.
 
 FOLDERS
-  setup/               the Setup page (form)
+  index.html           your business home page (prices / WhatsApp: ask Claude to fill)
+  demo/                demo party page for clients: momentqr.github.io/demo/  (+ demo/tv.html)
+  studio-4rgdtr/       the Setup page (hidden link + PIN)
   app/                 the design, shared by every client (do not edit)
   library/backgrounds/ ready backgrounds used by the Setup page
   library/sample-photo.jpg  sample photo used by the Setup preview
