@@ -1,27 +1,10 @@
-MOMENTQR - HOW IT WORKS NOW (NO CODE, JUST SAVE)
-================================================
+MOMENTQR v3 - QUICK NOTES
+=========================
+Studio: https://momentqr.github.io/studio-4rgdtr/   (PIN = ADMIN_PIN in your script)
+Pages:  Dashboard | + New / Edit client | Photos | Wishes | Business
 
-Studio (your control page):  https://momentqr.github.io/studio-4rgdtr/
-PIN: the ADMIN_PIN in your Google script (default 2468)
-
-NEW CLIENT
-  1. Client creates a Google Drive folder and shares it with your Gmail as Editor.
-  2. Studio > "+ New client" > fill name, date, theme, photo, background, song,
-     paste the client's folder link > Save.
-  3. Links & QR appear: guests' link (put on QR), TV slideshow link.
-  4. "Make table cards (PDF)" > Save as PDF > print.
-
-CHANGE A CLIENT
-  Studio > Your clients > Edit > change anything > Save. Live in about 1 minute.
-
-AFTER THE PARTY
-  Edit > untick "Uploads and wishes are open" > Save.
-  Photos + "Birthday Wishes" sheet are in the client's own folder.
-
-BUSINESS HOME PAGE (momentqr.github.io)
-  Studio > Business home page > WhatsApp + prices > Save business info.
-
-WHERE THINGS LIVE
-  Your Google Drive > "Momentqr Data"  = all client settings + photos/songs for pages
-  Client's folder                      = guests' photos + wishes
-  GitHub                               = the website (no more uploads needed)
+New client: + New client > event type, language, details, photo, background, song,
+            client's shared folder link > Save > links, QR, table cards.
+Party:     Photos / Wishes pages > tick "Auto-refresh" > Hide anything bad.
+After:     Edit > untick "Uploads open" (or set "Close automatically at") > Save.
+Script:    change code with Deploy > Manage deployments > pencil > New version (same link).

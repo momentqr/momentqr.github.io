@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Momentqr Studio · Wishes</title>
+<link rel="stylesheet" href="admin.css?v=20261127h">
+<script src="../app/config.js?v=20261127h"></script>
+</head>
+<body data-page="wishes">
+<div class="page">
+  <div class="toolbar">
+    <label for="client" class="help" style="font-weight:700">Client</label>
+    <select id="client"></select>
+    <button type="button" class="btn sec small" id="reload">Refresh</button>
+    <label class="check"><input type="checkbox" id="auto"> Auto-refresh (party mode)</label>
+  </div>
+  <p class="help" style="margin:-6px 0 12px"><b>Hide</b> removes a wish from the party page and the TV bullets. All wishes stay in the "Birthday Wishes" sheet in the client's folder.</p>
+  <div class="msg" id="msg" role="status"></div>
+  <div class="wl" id="list"></div>
+</div>
+<script src="admin.js?v=20261127h"></script>
+<script>
+(function(){
+  const A = window.MQA, $ = id => document.getElementById(id);
+  let code = '', timer = null;
+  function load(){
+    if (!code) return;
+    A.say('msg', 'Loading...');
+    A.api({ op: 'wishesAll', code }).then(r => {
+      if (!r.ok) return A.say('msg', r.error, true);
+      const hid = r.items.filter(w => w.hidden).length;
+      A.say('msg', r.items.length + ' wishes' + (hid ? ' · ' + hid + ' hidden' : ''));
+      const l = $('list'); l.textContent = '';
+      if (!r.items.length) l.innerHTML = '<p class="help">No wishes yet.</p>';
+      r.items.forEach(w => {
+        const d = document.createElement('div'); d.className = 'wrow' + (w.hidden ? ' hid' : '');
+        d.innerHTML = '<div class="tx"><b></b><div></div></div><button type="button" class="btn sec small"></button>';
+        d.querySelector('b').textContent = w.name; d.querySelector('.tx div').textContent = w.message;
+        const b = d.querySelector('button'); b.textContent = w.hidden ? 'Show' : 'Hide';
+        b.onclick = () => { b.disabled = true; A.api({ op: 'hideWish', code, row: w.row, hidden: !w.hidden }).then(x => x.ok ? load() : (A.say('msg', x.error, true), b.disabled = false)); };
+        l.appendChild(d);
+      });
+    }).catch(() => A.say('msg', 'No connection.', true));
+  }
+  $('reload').onclick = load;
+  $('auto').onchange = () => { clearInterval(timer); if ($('auto').checked) timer = setInterval(load, 20000); };
+  A.ready(() => A.clientPicker('client', c => { code = c; load(); }));
+})();
+</script>
+</body>
+</html>

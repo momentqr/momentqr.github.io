@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Momentqr Studio · Business</title>
+<link rel="stylesheet" href="admin.css?v=20261127h">
+<script src="../app/config.js?v=20261127h"></script>
+</head>
+<body data-page="biz">
+<div class="page" style="max-width:760px">
+  <section class="box" aria-labelledby="bizTitle">
+    <h2 id="bizTitle"><span>&#9733;</span>Business home page (momentqr.github.io)</h2>
+    <div class="row">
+      <div class="field"><label for="bWa">WhatsApp number</label><input type="text" id="bWa" inputmode="tel" placeholder="012-345 6789"></div>
+      <div class="field"><label for="bWaText">WhatsApp first message</label><input type="text" id="bWaText" maxlength="160" value="Hi Momentqr! I'm interested in the QR photo gallery for my party."></div>
+      <div class="field"><label for="bBasic">Basic package price</label><input type="text" id="bBasic" placeholder="RM99" maxlength="30"></div>
+      <div class="field"><label for="bPremium">Premium package price</label><input type="text" id="bPremium" placeholder="RM199" maxlength="30"></div>
+    </div>
+    <div class="inline" style="margin-top:12px"><button type="button" class="btn main" id="bSave">Save business info</button><a class="btn sec" href="../" target="_blank" rel="noopener" style="text-decoration:none">Open home page</a></div>
+    <div class="msg" id="bMsg" role="status"></div>
+  </section>
+</div>
+<script src="admin.js?v=20261127h"></script>
+<script>
+(function(){
+  const A = window.MQA, $ = id => document.getElementById(id), val = id => $(id).value.trim();
+  A.ready(() => {
+    fetch(A.API + '?action=biz').then(r => r.json()).then(r => {
+      if (!r.ok) return; const b = r.biz || {};
+      $('bWa').value = b.WHATSAPP ? '0' + String(b.WHATSAPP).replace(/^60/, '') : '';
+      if (b.WA_TEXT) $('bWaText').value = b.WA_TEXT;
+      $('bBasic').value = b.BASIC_PRICE || ''; $('bPremium').value = b.PREMIUM_PRICE || '';
+    }).catch(() => {});
+  });
+  $('bSave').onclick = () => {
+    let wa = $('bWa').value.replace(/\D/g, '');
+    if (wa) { if (wa.startsWith('0')) wa = '6' + wa; if (!wa.startsWith('60')) wa = '60' + wa; if (!/^60\d{8,11}$/.test(wa)) return A.say('bMsg', 'WhatsApp number looks wrong. Example: 012-345 6789', true); }
+    const price = v => { v = v.trim(); return !v ? '' : (/^\d/.test(v) ? 'RM' + v : v); };
+    $('bSave').disabled = true; A.say('bMsg', 'Saving...');
+    A.api({ op: 'saveBiz', biz: { WHATSAPP: wa, WA_TEXT: val('bWaText'), BASIC_PRICE: price($('bBasic').value), PREMIUM_PRICE: price($('bPremium').value) } })
+      .then(r => { $('bSave').disabled = false; r.ok ? A.say('bMsg', 'Saved! The home page shows it now.') : A.say('bMsg', r.error, true); })
+      .catch(() => { $('bSave').disabled = false; A.say('bMsg', 'No connection.', true); });
+  };
+})();
+</script>
+</body>
+</html>
