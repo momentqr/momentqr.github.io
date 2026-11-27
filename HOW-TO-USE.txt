@@ -1,7 +1,7 @@
 BIRTHDAY GALLERY - ONE SITE FOR ALL CLIENTS (NO CODING)
 =======================================================
 
-Guests' link:  yourbrand.pages.dev/<client>/     e.g. yourbrand.pages.dev/sarah/
+Guests link:  momentqr.github.io/<code>/     e.g. momentqr.github.io/k7x2m/
 
 NEW CLIENT (no code)
   1. Open the Setup page: double-click  my-site/setup/index.html
@@ -25,7 +25,7 @@ FOLDERS
   setup/               the Setup page (form)
   app/                 the design, shared by every client (do not edit)
   library/backgrounds/ ready backgrounds used by the Setup page
-  sarah/ aina/         example clients (you can delete them)
+  library/sample-photo.jpg  sample photo used by the Setup preview
 
 IMPORTANT
   - Always upload the WHOLE my-site folder. Each upload replaces

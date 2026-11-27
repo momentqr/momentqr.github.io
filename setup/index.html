@@ -62,7 +62,7 @@ ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
   <div class="box">
     <h2><span>1</span>Birthday details</h2>
     <div class="row">
-      <div class="field"><label for="name">Name</label><input type="text" id="name" value="Sarah" maxlength="30"></div>
+      <div class="field"><label for="name">Name</label><input type="text" id="name" value="" placeholder="e.g. Aisyah" maxlength="30"></div>
       <div class="field"><label for="title">Title</label><input type="text" id="title" value="Sweet Birthday" maxlength="40"><span class="help">e.g. Sweet 16, 7th Birthday</span></div>
       <div class="field"><label for="date">Date</label><input type="text" id="date" value="12 December 2026" maxlength="40"></div>
       <div class="field"><label for="invite">Small line on top</label><input type="text" id="invite" value="You're invited to" maxlength="40"></div>
@@ -118,8 +118,8 @@ ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
     <h2><span>6</span>Links</h2>
     <div class="row">
       <div class="field full"><label for="upload">Upload link (from script.google.com, ends with /exec)</label><input type="url" id="upload" placeholder="https://script.google.com/macros/s/.../exec"><span class="help">Leave empty to make a demo page.</span></div>
-      <div class="field"><label for="slug">Page name in the link</label><input type="text" id="slug" value="sarah" maxlength="40"><span class="help">small letters, numbers, - only</span></div>
-      <div class="field"><label for="site">Your site address</label><input type="text" id="site" placeholder="yourbrand.pages.dev"></div>
+      <div class="field"><label for="slug">Page name in the link</label><div class="inline"><input type="text" id="slug" value="" maxlength="40" style="flex:1;min-width:120px"><button type="button" class="btn sec" id="newCode" style="padding:8px 14px;min-height:0;font-size:13px">New code</button></div><span class="help">A random code, so no names show in the link. Keep the same code to update a client.</span></div>
+      <div class="field"><label for="site">Your site address</label><input type="text" id="site" value="momentqr.github.io" placeholder="momentqr.github.io"></div>
       <div class="field full"><label>Guests' link (put this in the QR)</label><div class="linkbox" id="finalLink"></div></div>
     </div>
   </div>
@@ -154,9 +154,14 @@ ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
   const FONTS = 'https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap';
 
   const slugify = s => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
-  let slugTouched = false;
-  $('slug').addEventListener('input', () => { slugTouched = true; $('slug').value = slugify($('slug').value) || ''; update(); });
-  $('name').addEventListener('input', () => { if (!slugTouched) $('slug').value = slugify($('name').value); });
+  function randomCode(){
+    const a = 'abcdefghjkmnpqrstuvwxyz23456789'; let c = '';
+    const r = new Uint32Array(6); crypto.getRandomValues(r);
+    r.forEach(n => c += a[n % a.length]); return c;
+  }
+  $('slug').value = randomCode();
+  $('slug').addEventListener('input', () => { $('slug').value = slugify($('slug').value) || ''; update(); });
+  $('newCode').onclick = () => { $('slug').value = randomCode(); update(); };
 
   function val(id){ return $(id).value.trim(); }
   function radio(name){ const r = document.querySelector('input[name="'+name+'"]:checked'); return r ? r.value : ''; }
@@ -216,7 +221,7 @@ ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
     let bg = bgChoice;
     if (bgChoice === 'own') bg = files.ownBg ? (forPreview ? files.ownBgUrl : 'bg.jpg') : '';
     else if (forPreview && bg) bg = ROOT + bg.replace('../','');
-    let photo = files.photo ? (forPreview ? files.photoUrl : 'photo.jpg') : (forPreview ? ROOT + 'sarah/photo.jpg' : 'photo.jpg');
+    let photo = files.photo ? (forPreview ? files.photoUrl : 'photo.jpg') : (forPreview ? ROOT + 'library/sample-photo.jpg' : 'photo.jpg');
     return {
       NAME: val('name') || 'Birthday Girl',
       TITLE: val('title'),
@@ -251,8 +256,8 @@ ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
   function update(){
     clearTimeout(t);
     t = setTimeout(() => {
-      $('preview').srcdoc = pageHtml(settings(true), ROOT + 'sarah/');
-      const site = val('site').replace(/^https?:\/\//,'').replace(/\/+$/,'') || 'yourbrand.pages.dev';
+      $('preview').srcdoc = pageHtml(settings(true), ROOT + 'library/');
+      const site = val('site').replace(/^https?:\/\//,'').replace(/\/+$/,'') || 'momentqr.github.io';
       $('finalLink').textContent = 'https://' + site + '/' + (val('slug') || 'client') + '/';
     }, 250);
   }
@@ -292,7 +297,7 @@ ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
   $('download').onclick = async () => {
     const slug = val('slug');
     if (!slug) return msg('Please fill in "Page name in the link".', true);
-    if (['app','library','setup'].includes(slug)) return msg('That page name is used by the system. Choose another.', true);
+    if (['app','library','setup','sarah','aina'].includes(slug)) return msg('That page name is used by the system. Choose another.', true);
     const up = val('upload');
     if (up && !/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(up)) return msg('Upload link looks wrong. It should start with https://script.google.com/macros/s/ and end with /exec', true);
     $('download').disabled = true; msg('Making the folder...');
@@ -300,7 +305,7 @@ ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
       const enc = new TextEncoder();
       const entries = [{ name: slug + '/index.html', data: enc.encode(pageHtml(settings(false))) }];
       if (files.photo) entries.push({ name: slug + '/photo.jpg', data: await bytes(files.photo) });
-      else entries.push({ name: slug + '/photo.jpg', data: await fetch(ROOT + 'sarah/photo.jpg').then(r => r.arrayBuffer()).then(a => new Uint8Array(a)).catch(() => new Uint8Array()) });
+      else entries.push({ name: slug + '/photo.jpg', data: await fetch(ROOT + 'library/sample-photo.jpg').then(r => r.arrayBuffer()).then(a => new Uint8Array(a)).catch(() => new Uint8Array()) });
       if (radio('bg') === 'own' && files.ownBg) entries.push({ name: slug + '/bg.jpg', data: await bytes(files.ownBg) });
       if (files.song) entries.push({ name: slug + '/song.mp3', data: await bytes(files.song) });
       const zip = makeZip(entries.filter(e => e.data.length));
