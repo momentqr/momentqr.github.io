@@ -94,6 +94,14 @@
   if (hasSong) { song.src = S.SONG; song.onerror = () => { hasSong = false; $('musicBtn').style.display = 'none'; }; }
   else $('musicHint').style.display = 'none';
 
+  // a song can also arrive later (online settings)
+  window.setSong = url => { if (!url) return; hasSong = true; song.src = url; $('musicHint').style.display = ''; };
+  if (S.OPEN === false) {
+    $('uploadBtn').closest('.card').querySelector('p.small').textContent = 'Uploads are closed. Thank you for all the photos!';
+    $('uploadBtn').style.display = 'none';
+    $('wishForm').style.display = 'none';
+  }
+
   $('openBtn').onclick = () => {
     $('cover').style.display = 'none';
     $('main').style.display = 'block';
@@ -112,10 +120,11 @@
 
   // ---------- network helpers ----------
   function post(obj){
+    if (S.CODE) obj.c = S.CODE;
     return fetch(S.UPLOAD_LINK, { method:'POST', body: JSON.stringify(obj) }).then(r => r.json());
   }
   function get(action){
-    return fetch(S.UPLOAD_LINK + '?action=' + action).then(r => r.json());
+    return fetch(S.UPLOAD_LINK + '?action=' + action + (S.CODE ? '&c=' + encodeURIComponent(S.CODE) : '')).then(r => r.json());
   }
 
   // ---------- gallery ----------
@@ -163,20 +172,20 @@
     if (!files.length) return;
     const status = $('status'), bar = $('bar'), fill = $('barFill');
     bar.style.display = 'block';
-    let done = 0, failed = 0;
+    let done = 0, failed = 0, lastErr = '';
     for (let i = 0; i < files.length; i++) {
       status.textContent = 'Uploading ' + (i + 1) + ' of ' + files.length + '...';
       fill.style.width = Math.round(i / files.length * 100) + '%';
       try {
         const payload = await prepare(files[i]);
         if (DEMO) { await new Promise(r => setTimeout(r, 600)); done++; continue; }
-        const r = await post(payload);
-        if (r.ok) done++; else { failed++; console.warn(r.error); }
+        const r = await post(Object.assign({ type: 'upload' }, payload));
+        if (r.ok) done++; else { failed++; lastErr = r.error; console.warn(r.error); }
       } catch (err) { failed++; console.warn(err); }
     }
     fill.style.width = '100%';
     status.textContent = failed
-      ? done + ' uploaded, ' + failed + ' could not upload (too big or no signal). Try again.'
+      ? (lastErr === 'Uploads are closed' ? 'Uploads are closed for this party. Thank you!' : done + ' uploaded, ' + failed + ' could not upload (too big or no signal). Try again.')
       : 'Thank you! ' + done + (done === 1 ? ' photo' : ' photos') + ' added.';
     setTimeout(() => { bar.style.display = 'none'; fill.style.width = '0'; }, 1500);
     loadGallery();

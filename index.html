@@ -7,15 +7,16 @@
 <meta name="description" content="Guests scan a QR, upload photos with no app and no login, and everything lands in one gallery. Music page, live TV slideshow and table cards included.">
 
 <script>
-/* ===== BUSINESS SETTINGS (Claude can change these for you) ===== */
+/* Default business settings. Real values are saved from the Studio and loaded online. */
 const BIZ = {
   WHATSAPP: "",                 // e.g. "60123456789"  (country code, no + or spaces). Empty = button hidden
   WA_TEXT:  "Hi Momentqr! I'm interested in the QR photo gallery for my party.",
-  BASIC_PRICE:   "RM [PRICE]",
-  PREMIUM_PRICE: "RM [PRICE]"
+  BASIC_PRICE:   "",
+  PREMIUM_PRICE: ""
 };
 </script>
 
+<script src="app/config.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -178,12 +179,16 @@ footer{text-align:center;padding:20px 0 40px;font-size:13px;color:var(--muted)}
 
 <script>
 (function(){
-  document.getElementById('pBasic').textContent = BIZ.BASIC_PRICE;
-  document.getElementById('pPremium').textContent = BIZ.PREMIUM_PRICE;
   document.getElementById('yr').textContent = new Date().getFullYear();
-  const wa = document.getElementById('waBtn');
-  if (/^\d{8,15}$/.test(BIZ.WHATSAPP)) wa.href = 'https://wa.me/' + BIZ.WHATSAPP + '?text=' + encodeURIComponent(BIZ.WA_TEXT);
-  else wa.style.display = 'none';
+  function apply(b){
+    document.getElementById('pBasic').textContent = b.BASIC_PRICE || 'Ask us';
+    document.getElementById('pPremium').textContent = b.PREMIUM_PRICE || 'Ask us';
+    const wa = document.getElementById('waBtn');
+    if (/^\d{8,15}$/.test(b.WHATSAPP || '')) { wa.href = 'https://wa.me/' + b.WHATSAPP + '?text=' + encodeURIComponent(b.WA_TEXT || ''); wa.style.display = ''; }
+    else wa.style.display = 'none';
+  }
+  apply({ WHATSAPP: '', BASIC_PRICE: '', PREMIUM_PRICE: '' });
+  if (window.MOMENTQR_API) fetch(window.MOMENTQR_API + '?action=biz').then(r => r.json()).then(r => { if (r.ok) apply(Object.assign({}, BIZ, r.biz)); }).catch(() => {});
 })();
 </script>
 </body>

@@ -28,7 +28,7 @@
 
   // QR of the guests' page (this folder)
   try {
-    const link = new URL('./', location.href).href;
+    const link = S.GUEST_LINK || new URL('./', location.href).href;
     const m = window.makeQR(link), n = m.length, q = 2; let d = '';
     for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (m[r][c]) d += 'M' + (c+q) + ' ' + (r+q) + 'h1v1h-1z';
     $('qr').innerHTML = '<svg viewBox="0 0 ' + (n+2*q) + ' ' + (n+2*q) + '" shape-rendering="crispEdges" role="img" aria-label="QR code to the party page"><rect width="100%" height="100%" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
@@ -47,7 +47,7 @@
 
   function refresh(){
     if (DEMO) { apply(demoItems()); return; }
-    fetch(S.UPLOAD_LINK + '?action=list').then(r => r.json()).then(r => { if (r.ok) apply(r.items.filter(x => !x.video)); }).catch(() => {});
+    fetch(S.UPLOAD_LINK + '?action=list' + (S.CODE ? '&c=' + encodeURIComponent(S.CODE) : '')).then(r => r.json()).then(r => { if (r.ok) apply(r.items.filter(x => !x.video)); }).catch(() => {});
   }
   function apply(list){
     const fresh = list.filter(x => !known.has(x.id));
@@ -80,7 +80,7 @@
   let wishes = [], w = 0;
   function loadWishes(){
     if (DEMO) { wishes = [{name:'Aunty Mai', message:'Happy birthday sayang!'}, {name:'Lisa', message:'Best party ever!'}]; return; }
-    fetch(S.UPLOAD_LINK + '?action=wishes').then(r => r.json()).then(r => { if (r.ok) wishes = r.items; }).catch(() => {});
+    fetch(S.UPLOAD_LINK + '?action=wishes' + (S.CODE ? '&c=' + encodeURIComponent(S.CODE) : '')).then(r => r.json()).then(r => { if (r.ok) wishes = r.items; }).catch(() => {});
   }
   function showWish(){
     const box = $('wish');
