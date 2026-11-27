@@ -1,0 +1,36 @@
+BIRTHDAY GALLERY - ONE SITE FOR ALL CLIENTS (NO CODING)
+=======================================================
+
+Guests' link:  yourbrand.pages.dev/<client>/     e.g. yourbrand.pages.dev/sarah/
+
+NEW CLIENT (no code)
+  1. Open the Setup page: double-click  my-site/setup/index.html
+     (opens in Chrome)
+  2. Fill in the form: name, title, date, theme, her photo,
+     background, song, upload link (/exec), page name.
+     Check the phone preview on the right.
+  3. Click "Download client folder (.zip)"
+  4. Unzip it INTO the my-site folder
+     (Windows: right-click the zip > Extract All > choose my-site)
+     You now have a new folder, e.g. my-site/mira
+  5. Upload the WHOLE my-site folder to Cloudflare Pages
+     (your project > Create new deployment)
+  6. Send the guests' link (shown on the Setup page) for the QR card
+
+CHANGE A CLIENT
+  Open the Setup page, fill it again with the same page name,
+  download, unzip into my-site (replace the old folder), upload again.
+
+FOLDERS
+  setup/               the Setup page (form)
+  app/                 the design, shared by every client (do not edit)
+  library/backgrounds/ ready backgrounds used by the Setup page
+  sarah/ aina/         example clients (you can delete them)
+
+IMPORTANT
+  - Always upload the WHOLE my-site folder. Each upload replaces
+    everything, so a missing client folder = that page disappears.
+  - Each client needs their own Google Drive folder + upload script
+    (their own /exec upload link).
+  - Party finished? Delete that client's folder and upload again.
+  - Empty upload link = demo page (sample photos, no real upload).

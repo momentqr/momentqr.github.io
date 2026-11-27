@@ -1,0 +1,9 @@
+Put your MP3 songs in this folder, e.g.
+  song1.mp3
+  song2.mp3
+  happy-birthday-piano.mp3
+
+Then in a client's settings choose one:
+  SONG: "../library/songs/song1.mp3",
+
+Keep each song small (2-5 MB). Use songs you have the right to use.
