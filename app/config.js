@@ -1,2 +1,2 @@
 /* Momentqr connection (your Google script Web app URL). */
-window.MOMENTQR_API = "https://script.google.com/macros/s/AKfycbwFANzNnnI3Dc34r2CCZZkUD_O_0vYM2lq8UODdULEk2KYQk-PLPd_PnE6pzq0uHA5nSA/exec";
+window.MOMENTQR_API = "https://script.google.com/macros/s/AKfycbwD6yZj4kHmDBHLpj5Nx_07Oy_YHBQKMa84g_cDVCfEcSuEatYRfoQ-hDaxLC0TADN99Q/exec";
