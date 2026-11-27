@@ -186,6 +186,24 @@ ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
 </aside>
 </div>
 
+<div class="wrap" style="padding-top:0">
+<section class="box" style="flex:1 1 100%" aria-labelledby="bizTitle">
+  <h2 id="bizTitle"><span>&#9733;</span>Business home page (momentqr.github.io)</h2>
+  <p class="help" style="margin:-4px 0 12px">Change your WhatsApp and prices here. Click Download, then upload the file to GitHub (main folder). Works when this page is opened online.</p>
+  <div class="row">
+    <div class="field"><label for="bWa">WhatsApp number</label><input type="text" id="bWa" inputmode="tel" placeholder="012-345 6789"><span class="help">Normal Malaysian number is fine, e.g. 012-345 6789</span></div>
+    <div class="field"><label for="bWaText">WhatsApp first message</label><input type="text" id="bWaText" maxlength="160"></div>
+    <div class="field"><label for="bBasic">Basic package price</label><input type="text" id="bBasic" placeholder="RM99" maxlength="30"></div>
+    <div class="field"><label for="bPremium">Premium package price</label><input type="text" id="bPremium" placeholder="RM199" maxlength="30"></div>
+  </div>
+  <div class="inline" style="margin-top:12px">
+    <button type="button" class="btn main" id="bDownload">Download home page (index.html)</button>
+    <a class="btn sec" href="../" target="_blank" rel="noopener" style="text-decoration:none">Open home page</a>
+  </div>
+  <div class="msg" id="bMsg" role="status"></div>
+</section>
+</div>
+
 <script src="../app/qrcode.js"></script>
 <script>
 (function(){
@@ -468,6 +486,45 @@ ol.next{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6}
     };
     fr.srcdoc = doc;
     $('cardMsg').textContent = 'Print window opening: choose "Save as PDF" as the printer.'; $('cardMsg').className = 'msg ok';
+  };
+
+  // ---------- business home page ----------
+  let homeSrc = null;
+  function bmsg(t, err){ $('bMsg').textContent = t; $('bMsg').className = 'msg ' + (err ? 'err' : 'ok'); }
+  fetch('../index.html', { cache: 'no-store' }).then(r => r.ok ? r.text() : Promise.reject()).then(t => {
+    homeSrc = t;
+    const m = t.match(/const BIZ = (\{[\s\S]*?\});/);
+    if (!m) return;
+    const get = k => { const x = m[1].match(new RegExp(k + '\\s*:\\s*("(?:[^"\\\\]|\\\\.)*")')); try { return x ? JSON.parse(x[1]) : ''; } catch(e){ return ''; } };
+    const wa = get('WHATSAPP'); $('bWa').value = wa ? '0' + wa.replace(/^60/, '') : '';
+    $('bWaText').value = get('WA_TEXT');
+    const b = get('BASIC_PRICE'), pr = get('PREMIUM_PRICE');
+    $('bBasic').value = /\[PRICE\]/.test(b) ? '' : b; $('bPremium').value = /\[PRICE\]/.test(pr) ? '' : pr;
+  }).catch(() => bmsg('Open this Studio online (momentqr.github.io/...) to edit the home page.', true));
+  function normWa(v){
+    let d = v.replace(/\D/g, '');
+    if (!d) return '';
+    if (d.startsWith('0')) d = '6' + d;
+    if (!d.startsWith('60')) d = '60' + d;
+    return d;
+  }
+  $('bDownload').onclick = () => {
+    if (!homeSrc) return bmsg('Could not read the home page. Open this Studio online (momentqr.github.io/...) and try again.', true);
+    const wa = normWa($('bWa').value);
+    if ($('bWa').value.trim() && !/^60\d{8,11}$/.test(wa)) return bmsg('WhatsApp number looks wrong. Example: 012-345 6789', true);
+    const price = v => { v = v.trim(); if (!v) return 'RM [PRICE]'; return /^\d/.test(v) ? 'RM' + v : v; };
+    const biz = {
+      WHATSAPP: wa,
+      WA_TEXT: $('bWaText').value.trim() || "Hi Momentqr! I'm interested in the QR photo gallery for my party.",
+      BASIC_PRICE: price($('bBasic').value),
+      PREMIUM_PRICE: price($('bPremium').value)
+    };
+    const block = 'const BIZ = {\n' + Object.keys(biz).map(k => '  ' + k + ': ' + JSON.stringify(biz[k]).replace(/</g, '\\u003c')).join(',\n') + '\n};';
+    const out = homeSrc.replace(/const BIZ = \{[\s\S]*?\};/, block);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([out], { type: 'text/html' })); a.download = 'index.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    bmsg('Downloaded index.html. Upload it to GitHub (main folder, replace the old one).');
   };
 
   update();
