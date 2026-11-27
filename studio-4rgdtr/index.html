@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Momentqr Studio</title>
-<script src="../app/config.js"></script>
-<script src="../app/qrcode.js"></script>
+<script src="../app/config.js?v=20261127b"></script>
+<script src="../app/qrcode.js?v=20261127b"></script>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#F6F1F3;color:#2B2B2B}
@@ -370,7 +370,7 @@ aside{flex:1 1 340px;position:sticky;top:16px;display:flex;flex-direction:column
       const s = JSON.stringify(previewSettings()).replace(/</g, '\\u003c');
       $('preview').srcdoc = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
         + '<base href="' + ROOT + 'p/"><script>const SETTINGS = ' + s + ';<\/script><link href="' + FONTS + '" rel="stylesheet">'
-        + '<link rel="stylesheet" href="../app/style.css"></head><body><script src="../app/app.js"><\/script></body></html>';
+        + '<link rel="stylesheet" href="../app/style.css?v=20261127b"></head><body><script src="../app/app.js?v=20261127b"><\/script></body></html>';
       $('guestLink').textContent = SITE + 'p/?c=' + cur.code;
       $('tvLink').textContent = SITE + 'p/tv.html?c=' + cur.code;
       $('saveFirst').style.display = cur.saved ? 'none' : '';
