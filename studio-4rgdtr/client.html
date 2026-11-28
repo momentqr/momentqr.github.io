@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Momentqr Studio · Client</title>
-<link rel="stylesheet" href="admin.css?v=20261127h">
-<script src="../app/config.js?v=20261127h"></script>
-<script src="../app/qrcode.js?v=20261127h"></script>
-<script src="../app/text.js?v=20261127h"></script>
+<link rel="stylesheet" href="admin.css?v=20261128a">
+<script src="../app/config.js?v=20261128a"></script>
+<script src="../app/qrcode.js?v=20261128a"></script>
+<script src="../app/text.js?v=20261128a"></script>
 </head>
 <body data-page="client">
 <div class="wrap">
@@ -127,7 +127,7 @@
   <div class="note">Preview only. Uploads in the preview are not saved.</div>
 </aside>
 </div>
-<script src="admin.js?v=20261127h"></script>
+<script src="admin.js?v=20261128a"></script>
 <script>
 (function(){
   const $ = id => document.getElementById(id);
@@ -244,7 +244,7 @@
       const s = JSON.stringify(previewSettings()).replace(/</g, '\\u003c');
       $('preview').srcdoc = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
         + '<base href="' + ROOT + 'p/"><script>const SETTINGS = ' + s + ';<\/script><link href="' + FONTS + '" rel="stylesheet">'
-        + '<link rel="stylesheet" href="../app/style.css?v=20261127h"></head><body><script src="../app/text.js?v=20261127h"><\/script><script src="../app/app.js?v=20261127h"><\/script></body></html>';
+        + '<link rel="stylesheet" href="../app/style.css?v=20261128a"></head><body><script src="../app/text.js?v=20261128a"><\/script><script src="../app/app.js?v=20261128a"><\/script></body></html>';
       $('guestLink').textContent = SITE + 'p/?c=' + cur.code;
       $('tvLink').textContent = SITE + 'p/tv.html?c=' + cur.code;
       $('saveFirst').style.display = cur.saved ? 'none' : '';
